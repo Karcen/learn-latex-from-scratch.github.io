@@ -1,0 +1,2634 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LaTeX 完全教程 - 从入门到差不多精通</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#000000',
+                        secondary: '#333333',
+                        accent: '#666666',
+                        light: '#f5f5f5',
+                        dark: '#1a1a1a'
+                    },
+                    fontFamily: {
+                        mono: ['Consolas', 'Monaco', 'Courier New', 'monospace'],
+                        sans: ['Inter', 'Helvetica', 'Arial', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .latex-code {
+                background: #f8f8f8;
+                border-left: 4px solid #333;
+            }
+            .latex-output {
+                background: #ffffff;
+                border: 1px solid #e0e0e0;
+            }
+            .interactive-element {
+                transition: all 0.3s ease;
+            }
+            .interactive-element:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            }
+            .tab-content {
+                display: none;
+            }
+            .tab-content.active {
+                display: block;
+                animation: fadeIn 0.5s ease;
+            }
+            .tab-button {
+                transition: all 0.3s ease;
+            }
+            .tab-button.active {
+                background: #000;
+                color: #fff;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .code-line {
+                position: relative;
+                padding-left: 1.5rem;
+            }
+            .code-line::before {
+                content: attr(data-line);
+                position: absolute;
+                left: 0;
+                color: #999;
+                font-size: 0.8rem;
+            }
+            .copy-button {
+                transition: all 0.2s ease;
+            }
+            .copy-button:hover {
+                background: #333;
+                color: #fff;
+            }
+            .copy-button.copied {
+                background: #28a745;
+                color: #fff;
+            }
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900 font-sans">
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 w-full bg-white border-b border-gray-200 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <i class="fa fa-code text-2xl"></i>
+                    <span class="text-xl font-bold">LaTeX 教程</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#basics" class="text-gray-700 hover:text-black transition-colors">基础入门</a>
+                    <a href="#formatting" class="text-gray-700 hover:text-black transition-colors">文本格式</a>
+                    <a href="#tables" class="text-gray-700 hover:text-black transition-colors">表格</a>
+                    <a href="#equations" class="text-gray-700 hover:text-black transition-colors">公式</a>
+                    <a href="#references" class="text-gray-700 hover:text-black transition-colors">参考文献</a>
+                    <a href="#tikz" class="text-gray-700 hover:text-black transition-colors">绘图</a>
+                    <a href="#beamer" class="text-gray-700 hover:text-black transition-colors">演示文稿</a>
+                </div>
+                <button id="mobile-menu-btn" class="md:hidden">
+                    <i class="fa fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        <!-- 移动端菜单 -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="#basics" class="block px-3 py-2 text-gray-700 hover:text-black">基础入门</a>
+                <a href="#formatting" class="block px-3 py-2 text-gray-700 hover:text-black">文本格式</a>
+                <a href="#tables" class="block px-3 py-2 text-gray-700 hover:text-black">表格</a>
+                <a href="#equations" class="block px-3 py-2 text-gray-700 hover:text-black">公式</a>
+                <a href="#references" class="block px-3 py-2 text-gray-700 hover:text-black">参考文献</a>
+                <a href="#tikz" class="block px-3 py-2 text-gray-700 hover:text-black">绘图</a>
+                <a href="#beamer" class="block px-3 py-2 text-gray-700 hover:text-black">演示文稿</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main class="pt-16">
+        <!-- 封面 -->
+        <section class="bg-gradient-to-br from-gray-50 to-white py-20">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-5xl font-bold mb-6">LaTeX 完全教程</h1>
+                <p class="text-xl text-gray-600 mb-8">从入门到精通，掌握专业文档排版的艺术</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="#basics" class="bg-black text-white px-8 py-3 rounded-md hover:bg-gray-800 transition-colors">
+                        开始学习
+                    </a>
+                    <a href="#toc" class="border border-gray-300 px-8 py-3 rounded-md hover:border-gray-400 transition-colors">
+                        查看目录
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 目录 -->
+        <section id="toc" class="py-16 bg-white">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold mb-8 text-center">课程目录</h2>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-semibold mb-4">基础篇</h3>
+                        <ul class="space-y-2">
+                            <li class="flex items-center space-x-2">
+                                <span class="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-sm">1</span>
+                                <a href="#basics" class="hover:text-gray-600">LaTeX 简介与安装</a>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-sm">2</span>
+                                <a href="#structure" class="hover:text-gray-600">文档结构</a>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-sm">3</span>
+                                <a href="#formatting" class="hover:text-gray-600">文本格式</a>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-sm">4</span>
+                                <a href="#fonts" class="hover:text-gray-600">字体设置</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-semibold mb-4">进阶篇</h3>
+                        <ul class="space-y-2">
+                            <li class="flex items-center space-x-2">
+                                <span class="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-sm">5</span>
+                                <a href="#tables" class="hover:text-gray-600">表格制作</a>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-sm">6</span>
+                                <a href="#equations" class="hover:text-gray-600">数学公式</a>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-sm">7</span>
+                                <a href="#figures" class="hover:text-gray-600">图片插入</a>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-sm">8</span>
+                                <a href="#references" class="hover:text-gray-600">参考文献</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-semibold mb-4">高级篇</h3>
+                        <ul class="space-y-2">
+                            <li class="flex items-center space-x-2">
+                                <span class="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-sm">9</span>
+                                <a href="#tikz" class="hover:text-gray-600">TikZ 绘图</a>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-sm">10</span>
+                                <a href="#commands" class="hover:text-gray-600">自定义命令</a>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-sm">11</span>
+                                <a href="#packages" class="hover:text-gray-600">常用宏包</a>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-sm">12</span>
+                                <a href="#beamer" class="hover:text-gray-600">Beamer 演示文稿</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-semibold mb-4">实用技巧</h3>
+                        <ul class="space-y-2">
+                            <li class="flex items-center space-x-2">
+                                <span class="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-sm">13</span>
+                                <a href="#chinese" class="hover:text-gray-600">中文支持</a>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-sm">14</span>
+                                <a href="#watermark" class="hover:text-gray-600">水印与背景</a>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-sm">15</span>
+                                <a href="#debugging" class="hover:text-gray-600">调试技巧</a>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center text-sm">16</span>
+                                <a href="#best-practices" class="hover:text-gray-600">最佳实践</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 基础入门 -->
+        <section id="basics" class="py-16 bg-gray-50">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold mb-8 text-center">1. LaTeX 简介与安装</h2>
+                
+                <div class="bg-white rounded-lg shadow-sm p-8 mb-8">
+                    <h3 class="text-2xl font-semibold mb-4">什么是 LaTeX？</h3>
+                    <p class="text-gray-700 mb-6">
+                        LaTeX 是一种基于 TeX 的排版系统，由 Leslie Lamport 开发。它特别适合生成高印刷质量的科技和数学文档。LaTeX 让你专注于内容创作，而不是排版细节。
+                    </p>
+                    
+                    <h3 class="text-2xl font-semibold mb-4">安装 LaTeX</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center text-sm flex-shrink-0 mt-1">1</div>
+                            <div>
+                                <h4 class="font-semibold mb-2">各种系统</h4>
+                                <p class="text-gray-700">注册并使用 Overleaf 或者 Tex Page在线编译（<strong>Recommended!</strong>）</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center text-sm flex-shrink-0 mt-1">2</div>
+                            <div>
+                                <h4 class="font-semibold mb-2">Windows 系统</h4>
+                                <p class="text-gray-700">下载并安装 TeX Live 或 MiKTeX</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center text-sm flex-shrink-0 mt-1">3</div>
+                            <div>
+                                <h4 class="font-semibold mb-2">macOS 系统</h4>
+                                <p class="text-gray-700">安装 MacTeX</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center text-sm flex-shrink-0 mt-1">4</div>
+                            <div>
+                                <h4 class="font-semibold mb-2">Linux 系统</h4>
+                                <p class="text-gray-700">使用包管理器安装 texlive-full</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 第一个 LaTeX 文档 -->
+                <div class="bg-white rounded-lg shadow-sm p-8">
+                    <h3 class="text-2xl font-semibold mb-4">第一个 LaTeX 文档</h3>
+                    
+                    <div class="mb-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-semibold">代码示例</h4>
+                            <button class="copy-button px-3 py-1 text-sm border border-gray-300 rounded" onclick="copyCode(this, 'first-doc-code')">
+                                <i class="fa fa-copy mr-1"></i>复制
+                            </button>
+                        </div>
+                        <pre id="first-doc-code" class="latex-code p-4 rounded-md overflow-x-auto font-mono text-sm">
+\documentclass{article}
+\usepackage{ctex} % 中文支持
+
+\title{我的第一个 LaTeX 文档}
+\author{LaTeX 学习者}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{引言}
+这是我的第一个 LaTeX 文档。LaTeX 是一个强大的排版系统，特别适合制作科技文档。
+
+\section{正文}
+LaTeX 具有以下优点：
+\begin{itemize}
+    \item 优秀的数学公式排版
+    \item 自动生成目录和参考文献
+    \item 专业的文档格式
+    \item 跨平台兼容性
+\end{itemize}
+
+\section{结论}
+LaTeX 是学术写作的首选工具。
+
+\end{document}</pre>
+                    </div>
+
+                    <div class="mb-6">
+                        <h4 class="font-semibold mb-2">编译步骤</h4>
+                        <ol class="list-decimal list-inside space-y-2 text-gray-700">
+                            <li>将代码保存为 .tex 文件</li>
+                            <li>使用 XeLaTeX 或 pdfLaTeX 编译</li>
+                            <li>查看生成的 PDF 文件</li>
+                        </ol>
+                    </div>
+
+                    <!-- 实时预览 -->
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <h4 class="font-semibold mb-2">效果预览</h4>
+                        <div class="latex-output p-6 rounded">
+                            <div class="text-center mb-6">
+                                <h2 class="text-2xl font-bold mb-2">我的第一个 LaTeX 文档</h2>
+                                <p class="text-gray-600">LaTeX 学习者</p>
+                                <p class="text-gray-500 text-sm">2025年10月5日</p>
+                            </div>
+                            
+                            <h3 class="text-xl font-semibold mb-3">1. 引言</h3>
+                            <p class="mb-4">这是我的第一个 LaTeX 文档。LaTeX 是一个强大的排版系统，特别适合制作科技文档。</p>
+                            
+                            <h3 class="text-xl font-semibold mb-3">2. 正文</h3>
+                            <p class="mb-3">LaTeX 具有以下优点：</p>
+                            <ul class="list-disc list-inside space-y-1 mb-4">
+                                <li>优秀的数学公式排版</li>
+                                <li>自动生成目录和参考文献</li>
+                                <li>专业的文档格式</li>
+                                <li>跨平台兼容性</li>
+                            </ul>
+                            
+                            <h3 class="text-xl font-semibold mb-3">3. 结论</h3>
+                            <p>LaTeX 是学术写作的首选工具。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 文档结构 -->
+        <section id="structure" class="py-16 bg-white">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold mb-8 text-center">2. 文档结构</h2>
+                
+                <div class="grid md:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-gray-50 rounded-lg p-6">
+                        <h3 class="text-xl font-semibold mb-4">导言区</h3>
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-center space-x-2">
+                                <i class="fa fa-check text-black"></i>
+                                <span>文档类声明</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <i class="fa fa-check text-black"></i>
+                                <span>宏包导入</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <i class="fa fa-check text-black"></i>
+                                <span>标题信息设置</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <i class="fa fa-check text-black"></i>
+                                <span>自定义命令</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-lg p-6">
+                        <h3 class="text-xl font-semibold mb-4">正文区</h3>
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-center space-x-2">
+                                <i class="fa fa-check text-black"></i>
+                                <span>章节标题</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <i class="fa fa-check text-black"></i>
+                                <span>段落文本</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <i class="fa fa-check text-black"></i>
+                                <span>列表环境</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <i class="fa fa-check text-black"></i>
+                                <span>公式和图表</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 文档类 -->
+                <div class="bg-gray-50 rounded-lg p-8 mb-8">
+                    <h3 class="text-2xl font-semibold mb-6">常用文档类</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <h4 class="font-semibold mb-2">article</h4>
+                                <p class="text-sm text-gray-700">用于学术论文、报告、文章等短文档</p>
+                                <div class="mt-2 text-xs font-mono bg-white p-2 rounded">
+                                    \documentclass{article}
+                                </div>
+                            </div>
+                            
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <h4 class="font-semibold mb-2">report</h4>
+                                <p class="text-sm text-gray-700">用于较长的报告，支持章节分页</p>
+                                <div class="mt-2 text-xs font-mono bg-white p-2 rounded">
+                                    \documentclass{report}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <h4 class="font-semibold mb-2">book</h4>
+                                <p class="text-sm text-gray-700">用于书籍，支持双面排版和索引</p>
+                                <div class="mt-2 text-xs font-mono bg-white p-2 rounded">
+                                    \documentclass{book}
+                                </div>
+                            </div>
+                            
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <h4 class="font-semibold mb-2">beamer</h4>
+                                <p class="text-sm text-gray-700">用于制作演示文稿</p>
+                                <div class="mt-2 text-xs font-mono bg-white p-2 rounded">
+                                    \documentclass{beamer}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 章节结构 -->
+                <div class="bg-white rounded-lg shadow-sm p-8">
+                    <h3 class="text-2xl font-semibold mb-6">章节结构示例</h3>
+                    
+                    <div class="mb-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-semibold">代码示例</h4>
+                            <button class="copy-button px-3 py-1 text-sm border border-gray-300 rounded" onclick="copyCode(this, 'structure-code')">
+                                <i class="fa fa-copy mr-1"></i>复制
+                            </button>
+                        </div>
+                        <pre id="structure-code" class="latex-code p-4 rounded-md overflow-x-auto font-mono text-sm">
+\documentclass{report}
+\usepackage{ctex}
+
+\begin{document}
+
+\title{文档结构示例}
+\author{作者姓名}
+\date{}
+\maketitle
+
+\tableofcontents % 生成目录
+
+\chapter{第一章}
+\section{第一节}
+这是第一节的内容。
+
+\subsection{第一小节}
+这是第一小节的内容。
+
+\subsubsection{第一小小节}
+这是第一小小节的内容。
+
+\section{第二节}
+这是第二节的内容。
+
+\chapter{第二章}
+这是第二章的内容。
+
+\end{document}</pre>
+                    </div>
+
+                    <!-- 实时预览 -->
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <h4 class="font-semibold mb-2">效果预览</h4>
+                        <div class="latex-output p-6 rounded">
+                            <div class="text-center mb-6">
+                                <h2 class="text-2xl font-bold mb-2">文档结构示例</h2>
+                                <p class="text-gray-600">作者姓名</p>
+                            </div>
+                            
+                            <h3 class="text-xl font-semibold mb-3">目录</h3>
+                            <div class="space-y-1 mb-6">
+                                <p>第一章 ......................................................... 3</p>
+                                <p>1.1 第一节 ..................................................... 3</p>
+                                <p>1.1.1 第一小节 ................................................. 3</p>
+                                <p>1.1.1.1 第一小小节 ............................................. 3</p>
+                                <p>1.2 第二节 ..................................................... 3</p>
+                                <p>第二章 ......................................................... 4</p>
+                            </div>
+                            
+                            <h2 class="text-2xl font-bold mb-4">第一章</h2>
+                            <h3 class="text-xl font-semibold mb-3">1.1 第一节</h3>
+                            <p class="mb-4">这是第一节的内容。</p>
+                            
+                            <h4 class="text-lg font-semibold mb-2">1.1.1 第一小节</h4>
+                            <p class="mb-3">这是第一小节的内容。</p>
+                            
+                            <h5 class="font-semibold mb-2">1.1.1.1 第一小小节</h5>
+                            <p class="mb-4">这是第一小小节的内容。</p>
+                            
+                            <h3 class="text-xl font-semibold mb-3">1.2 第二节</h3>
+                            <p class="mb-4">这是第二节的内容。</p>
+                            
+                            <h2 class="text-2xl font-bold mb-4">第二章</h2>
+                            <p>这是第二章的内容。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 文本格式 -->
+        <section id="formatting" class="py-16 bg-gray-50">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold mb-8 text-center">3. 文本格式</h2>
+                
+                <!-- 基础格式 -->
+                <div class="bg-white rounded-lg shadow-sm p-8 mb-8">
+                    <h3 class="text-2xl font-semibold mb-6">基础文本格式</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold mb-4">代码示例</h4>
+                            <pre class="latex-code p-4 rounded-md overflow-x-auto font-mono text-sm">
+% 文本格式示例
+\textbf{粗体文本}
+
+\textit{斜体文本}
+
+\textsl{倾斜文本}
+
+\textsc{小型大写字母}
+
+\textsf{无衬线字体}
+
+\texttt{等宽字体}
+
+\underline{下划线文本}
+
+\sout{删除线文本}
+
+\textcolor{red}{红色文本}
+
+{\Huge 超大号字体}
+{\huge 大号字体}
+{\Large 大字体}
+{\large 稍大字体}
+{正常字体}
+{\small 小字体}
+{\footnotesize 脚注字体}
+{\scriptsize 非常小字体}
+{\tiny 极小字体}</pre>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-4">效果预览</h4>
+                            <div class="latex-output p-6 rounded space-y-3">
+                                <p><strong>粗体文本</strong></p>
+                                <p><em>斜体文本</em></p>
+                                <p style="font-style: oblique;">倾斜文本</p>
+                                <p style="font-variant: small-caps;">小型大写字母</p>
+                                <p style="font-family: sans-serif;">无衬线字体</p>
+                                <p style="font-family: monospace;">等宽字体</p>
+                                <p><u>下划线文本</u></p>
+                                <p style="text-decoration: line-through;">删除线文本</p>
+                                <p style="color: red;">红色文本</p>
+                                
+                                <p style="font-size: 2.5rem; line-height: 1;">超大号字体</p>
+                                <p style="font-size: 2rem; line-height: 1;">大号字体</p>
+                                <p style="font-size: 1.5rem; line-height: 1;">大字体</p>
+                                <p style="font-size: 1.2rem; line-height: 1;">稍大字体</p>
+                                <p>正常字体</p>
+                                <p style="font-size: 0.9rem; line-height: 1;">小字体</p>
+                                <p style="font-size: 0.8rem; line-height: 1;">脚注字体</p>
+                                <p style="font-size: 0.7rem; line-height: 1;">非常小字体</p>
+                                <p style="font-size: 0.6rem; line-height: 1;">极小字体</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 对齐方式 -->
+                <div class="bg-white rounded-lg shadow-sm p-8 mb-8">
+                    <h3 class="text-2xl font-semibold mb-6">文本对齐方式</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold mb-4">代码示例</h4>
+                            <pre class="latex-code p-4 rounded-md overflow-x-auto font-mono text-sm">
+% 文本对齐方式
+\begin{center}
+居中对齐的文本\\
+这是第二行
+\end{center}
+
+\begin{flushleft}
+左对齐的文本\\
+这是第二行
+\end{flushleft}
+
+\begin{flushright}
+右对齐的文本\\
+这是第二行
+\end{flushright}
+
+% 段落对齐
+\noindent 无缩进段落：这是一个没有首行缩进的段落。
+
+有缩进段落：这是一个有首行缩进的正常段落。
+
+\parbox[t]{8cm}{
+    这是一个固定宽度的文本框，内容会自动换行。
+    可以设置宽度和垂直对齐方式。
+}</pre>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-4">效果预览</h4>
+                            <div class="latex-output p-6 rounded space-y-6">
+                                <div class="text-center p-4 bg-gray-50 rounded">
+                                    <p>居中对齐的文本</p>
+                                    <p>这是第二行</p>
+                                </div>
+                                
+                                <div class="text-left p-4 bg-gray-50 rounded">
+                                    <p>左对齐的文本</p>
+                                    <p>这是第二行</p>
+                                </div>
+                                
+                                <div class="text-right p-4 bg-gray-50 rounded">
+                                    <p>右对齐的文本</p>
+                                    <p>这是第二行</p>
+                                </div>
+                                
+                                <div class="space-y-4">
+                                    <p style="text-indent: 0;">无缩进段落：这是一个没有首行缩进的段落。</p>
+                                    <p style="text-indent: 2em;">有缩进段落：这是一个有首行缩进的正常段落。</p>
+                                    
+                                    <div class="w-64 p-4 border border-gray-200 rounded">
+                                        <p>这是一个固定宽度的文本框，内容会自动换行。可以设置宽度和垂直对齐方式。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 列表环境 -->
+                <div class="bg-white rounded-lg shadow-sm p-8">
+                    <h3 class="text-2xl font-semibold mb-6">列表环境</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold mb-4">代码示例</h4>
+                            <pre class="latex-code p-4 rounded-md overflow-x-auto font-mono text-sm">
+% 无序列表
+\begin{itemize}
+    \item 第一个项目
+    \item 第二个项目
+    \begin{itemize}
+        \item 子项目1
+        \item 子项目2
+    \end{itemize}
+    \item 第三个项目
+\end{itemize}
+
+% 有序列表
+\begin{enumerate}
+    \item 第一步
+    \item 第二步
+    \begin{enumerate}
+        \item 子步骤a
+        \item 子步骤b
+    \end{enumerate}
+    \item 第三步
+\end{enumerate}
+
+% 描述列表
+\begin{description}
+    \item[LaTeX] 专业的排版系统
+    \item[TeX] LaTeX 的基础
+    \item[BibTeX] 参考文献管理工具
+\end{description}
+
+% 自定义列表
+\begin{list}{\checkmark}{}
+    \item 已完成项目1
+    \item 已完成项目2
+    \item 待完成项目3
+\end{list}</pre>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-4">效果预览</h4>
+                            <div class="latex-output p-6 rounded space-y-6">
+                                <div>
+                                    <h5 class="font-semibold mb-2">无序列表</h5>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li>第一个项目</li>
+                                        <li>第二个项目
+                                            <ul class="list-circle list-inside ml-4 space-y-1">
+                                                <li>子项目1</li>
+                                                <li>子项目2</li>
+                                            </ul>
+                                        </li>
+                                        <li>第三个项目</li>
+                                    </ul>
+                                </div>
+                                
+                                <div>
+                                    <h5 class="font-semibold mb-2">有序列表</h5>
+                                    <ol class="list-decimal list-inside space-y-1">
+                                        <li>第一步</li>
+                                        <li>第二步
+                                            <ol class="list-alpha list-inside ml-4 space-y-1">
+                                                <li>子步骤a</li>
+                                                <li>子步骤b</li>
+                                            </ol>
+                                        </li>
+                                        <li>第三步</li>
+                                    </ol>
+                                </div>
+                                
+                                <div>
+                                    <h5 class="font-semibold mb-2">描述列表</h5>
+                                    <dl class="space-y-2">
+                                        <dt class="font-semibold">LaTeX</dt>
+                                        <dd class="ml-4">专业的排版系统</dd>
+                                        <dt class="font-semibold">TeX</dt>
+                                        <dd class="ml-4">LaTeX 的基础</dd>
+                                        <dt class="font-semibold">BibTeX</dt>
+                                        <dd class="ml-4">参考文献管理工具</dd>
+                                    </dl>
+                                </div>
+                                
+                                <div>
+                                    <h5 class="font-semibold mb-2">自定义列表</h5>
+                                    <ul class="space-y-1">
+                                        <li>✓ 已完成项目1</li>
+                                        <li>✓ 已完成项目2</li>
+                                        <li>✓ 待完成项目3</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 表格 -->
+        <section id="tables" class="py-16 bg-white">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold mb-8 text-center">4. 表格制作</h2>
+                <h4>在LaTeX表格中，`|c|c|c|`用于定义列格式：`c`表示列内容居中对齐，`|`表示添加垂直线；整体意为创建3列居中对齐且两侧及列间都有竖线的表格。其他用法包括：`l`左对齐、`r`右对齐；`p{宽度}`设置固定列宽（内容自动换行）；`m{宽度}`垂直居中固定列宽；`|`可灵活控制竖线位置（如`c|c`表示列间有竖线）。</h4>
+                <br>
+                <!-- 基础表格 -->
+                <div class="bg-gray-50 rounded-lg p-8 mb-8">
+                    <h3 class="text-2xl font-semibold mb-6">基础表格</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold mb-4">代码示例</h4>
+                            <pre class="latex-code p-4 rounded-md overflow-x-auto font-mono text-sm">
+% 基础表格
+\begin{tabular}{|c|l|r|}
+    \hline
+    居中对齐 & 左对齐 & 右对齐 \\
+    \hline
+    数据1 & 数据2 & 数据3 \\
+    \hline
+    数据4 & 数据5 & 数据6 \\
+    \hline
+\end{tabular}
+
+% 合并单元格
+\begin{tabular}{|c|c|c|}
+    \hline
+    \multicolumn{3}{|c|}{合并三列} \\
+    \hline
+    \multirow{2}{*}{合并两行} & 数据1 & 数据2 \\
+    \cline{2-3}
+    & 数据3 & 数据4 \\
+    \hline
+\end{tabular}
+
+% 三线表
+\begin{tabular}{lccr}
+    \toprule
+    项目 & 数值1 & 数值2 & 总计 \\
+    \midrule
+    A & 10 & 20 & 30 \\
+    B & 15 & 25 & 40 \\
+    C & 5 & 35 & 40 \\
+    \bottomrule
+\end{tabular}</pre>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-4">效果预览</h4>
+                            <div class="latex-output p-6 rounded space-y-6">
+                                <div class="overflow-x-auto">
+                                    <table class="border-collapse">
+                                        <tr>
+                                            <td class="border border-black p-2 text-center">居中对齐</td>
+                                            <td class="border border-black p-2 text-left">左对齐</td>
+                                            <td class="border border-black p-2 text-right">右对齐</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border border-black p-2 text-center">数据1</td>
+                                            <td class="border border-black p-2 text-left">数据2</td>
+                                            <td class="border border-black p-2 text-right">数据3</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border border-black p-2 text-center">数据4</td>
+                                            <td class="border border-black p-2 text-left">数据5</td>
+                                            <td class="border border-black p-2 text-right">数据6</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                
+                                <div class="overflow-x-auto">
+                                    <table class="border-collapse">
+                                        <tr>
+                                            <td class="border border-black p-2 text-center" colspan="3">合并三列</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border border-black p-2 text-center" rowspan="2">合并两行</td>
+                                            <td class="border border-black p-2 text-center">数据1</td>
+                                            <td class="border border-black p-2 text-center">数据2</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border border-black p-2 text-center">数据3</td>
+                                            <td class="border border-black p-2 text-center">数据4</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                
+                                <div class="overflow-x-auto">
+                                    <table class="border-collapse">
+                                        <tr>
+                                            <td class="border-t-2 border-b border-black p-2 text-left">项目</td>
+                                            <td class="border-t-2 border-b border-black p-2 text-center">数值1</td>
+                                            <td class="border-t-2 border-b border-black p-2 text-center">数值2</td>
+                                            <td class="border-t-2 border-b border-black p-2 text-right">总计</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border-b border-black p-2 text-left">A</td>
+                                            <td class="border-b border-black p-2 text-center">10</td>
+                                            <td class="border-b border-black p-2 text-center">20</td>
+                                            <td class="border-b border-black p-2 text-right">30</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border-b border-black p-2 text-left">B</td>
+                                            <td class="border-b border-black p-2 text-center">15</td>
+                                            <td class="border-b border-black p-2 text-center">25</td>
+                                            <td class="border-b border-black p-2 text-right">40</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border-b-2 border-black p-2 text-left">C</td>
+                                            <td class="border-b-2 border-black p-2 text-center">5</td>
+                                            <td class="border-b-2 border-black p-2 text-center">35</td>
+                                            <td class="border-b-2 border-black p-2 text-right">40</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 长表格 -->
+                <div class="bg-white rounded-lg shadow-sm p-8 mb-8">
+                    <h3 class="text-2xl font-semibold mb-6">长表格 (longtable)</h3>
+                    
+                    <div class="mb-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-semibold">代码示例</h4>
+                            <button class="copy-button px-3 py-1 text-sm border border-gray-300 rounded" onclick="copyCode(this, 'longtable-code')">
+                                <i class="fa fa-copy mr-1"></i>复制
+                            </button>
+                        </div>
+                        <pre id="longtable-code" class="latex-code p-4 rounded-md overflow-x-auto font-mono text-sm">
+\usepackage{longtable}
+
+\begin{longtable}{|l|c|r|}
+    \caption{学生成绩表}
+    \label{tab:scores} \\
+    \hline
+    \textbf{姓名} & \textbf{学号} & \textbf{成绩} \\
+    \hline
+    \endhead % 表头
+    \hline
+    \multicolumn{3}{r}{续下页...} \\
+    \hline
+    \endfoot % 表脚
+    \hline
+    \endlastfoot % 最后一页的表脚
+    
+    张三 & 2023001 & 85 \\
+    \hline
+    李四 & 2023002 & 92 \\
+    \hline
+    王五 & 2023003 & 78 \\
+    \hline
+    赵六 & 2023004 & 88 \\
+    \hline
+    钱七 & 2023005 & 95 \\
+    \hline
+    孙八 & 2023006 & 81 \\
+    \hline
+    周九 & 2023007 & 90 \\
+    \hline
+    吴十 & 2023008 & 87 \\
+    \hline
+    % 更多数据行...
+    
+\end{longtable}</pre>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <h4 class="font-semibold mb-2">特点说明</h4>
+                        <ul class="list-disc list-inside space-y-1 text-gray-700">
+                            <li>自动跨页显示</li>
+                            <li>每页都显示表头</li>
+                            <li>可设置表脚和最后一页的表脚</li>
+                            <li>支持表格标题和标签</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 复杂表格 -->
+                <div class="bg-white rounded-lg shadow-sm p-8">
+                    <h3 class="text-2xl font-semibold mb-6">复杂表格示例</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold mb-4">代码示例</h4>
+                            <pre class="latex-code p-4 rounded-md overflow-x-auto font-mono text-sm">
+\usepackage{multirow}
+\usepackage{booktabs}
+
+\begin{tabular}{cccc}
+    \toprule
+    \multirow{2}{*}{\textbf{类别}} & \multicolumn{3}{c}{\textbf{性能指标}} \\
+    \cmidrule(lr){2-4}
+    & 精度 & 召回率 & F1分数 \\
+    \midrule
+    方法A & 85.2\% & 82.1\% & 83.6\% \\
+    方法B & 88.9\% & 86.7\% & 87.8\% \\
+    方法C & 91.5\% & 89.3\% & 90.4\% \\
+    \midrule
+    \textbf{平均值} & \textbf{88.5\%} & \textbf{86.0\%} & \textbf{87.3\%} \\
+    \bottomrule
+\end{tabular}
+
+% 带颜色的表格
+\usepackage{xcolor}
+\begin{tabular}{|c|c|c|}
+    \hline
+    \rowcolor{gray!20}
+    项目 & 数值 & 状态 \\
+    \hline
+    A & 100 & \cellcolor{green!20}正常 \\
+    \hline
+    B & 50 & \cellcolor{yellow!20}警告 \\
+    \hline
+    C & 10 & \cellcolor{red!20}异常 \\
+    \hline
+\end{tabular}</pre>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-4">效果预览</h4>
+                            <div class="latex-output p-6 rounded space-y-6">
+                                <div class="overflow-x-auto">
+                                    <table class="border-collapse">
+                                        <tr>
+                                            <td class="border-t-2 border-b border-black p-2 text-center font-semibold" rowspan="2">类别</td>
+                                            <td class="border-t-2 border-b border-black p-2 text-center font-semibold" colspan="3">性能指标</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border-b border-black p-2 text-center">精度</td>
+                                            <td class="border-b border-black p-2 text-center">召回率</td>
+                                            <td class="border-b border-black p-2 text-center">F1分数</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border-b border-black p-2 text-center">方法A</td>
+                                            <td class="border-b border-black p-2 text-center">85.2%</td>
+                                            <td class="border-b border-black p-2 text-center">82.1%</td>
+                                            <td class="border-b border-black p-2 text-center">83.6%</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border-b border-black p-2 text-center">方法B</td>
+                                            <td class="border-b border-black p-2 text-center">88.9%</td>
+                                            <td class="border-b border-black p-2 text-center">86.7%</td>
+                                            <td class="border-b border-black p-2 text-center">87.8%</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border-b border-black p-2 text-center">方法C</td>
+                                            <td class="border-b border-black p-2 text-center">91.5%</td>
+                                            <td class="border-b border-black p-2 text-center">89.3%</td>
+                                            <td class="border-b border-black p-2 text-center">90.4%</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border-b-2 border-black p-2 text-center font-semibold">平均值</td>
+                                            <td class="border-b-2 border-black p-2 text-center font-semibold">88.5%</td>
+                                            <td class="border-b-2 border-black p-2 text-center font-semibold">86.0%</td>
+                                            <td class="border-b-2 border-black p-2 text-center font-semibold">87.3%</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                
+                                <div class="overflow-x-auto">
+                                    <table class="border-collapse">
+                                        <tr class="bg-gray-200">
+                                            <td class="border border-black p-2 text-center font-semibold">项目</td>
+                                            <td class="border border-black p-2 text-center font-semibold">数值</td>
+                                            <td class="border border-black p-2 text-center font-semibold">状态</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border border-black p-2 text-center">A</td>
+                                            <td class="border border-black p-2 text-center">100</td>
+                                            <td class="border border-black p-2 text-center bg-green-100">正常</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border border-black p-2 text-center">B</td>
+                                            <td class="border border-black p-2 text-center">50</td>
+                                            <td class="border border-black p-2 text-center bg-yellow-100">警告</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border border-black p-2 text-center">C</td>
+                                            <td class="border border-black p-2 text-center">10</td>
+                                            <td class="border border-black p-2 text-center bg-red-100">异常</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 数学公式 -->
+        <section id="equations" class="py-16 bg-gray-50">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold mb-8 text-center">5. 数学公式</h2>
+                
+                <!-- 行内公式 -->
+                <div class="bg-white rounded-lg shadow-sm p-8 mb-8">
+                    <h3 class="text-2xl font-semibold mb-6">行内公式</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold mb-4">代码示例</h4>
+                            <pre class="latex-code p-4 rounded-md overflow-x-auto font-mono text-sm">
+% 行内公式使用 $...$
+勾股定理：$a^2 + b^2 = c^2$
+
+欧拉恒等式：$e^{i\pi} + 1 = 0$
+
+分数：$\frac{a}{b} + \frac{c}{d} = \frac{ad + bc}{bd}$
+
+根号：$\sqrt{x^2 + y^2}$
+
+求和：$\sum_{i=1}^{n} i = \frac{n(n+1)}{2}$
+
+积分：$\int_{a}^{b} f(x) dx$
+
+极限：$\lim_{x \to \infty} \frac{1}{x} = 0$
+
+矩阵：$\begin{pmatrix} a & b \\ c & d \end{pmatrix}$</pre>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-4">效果预览</h4>
+                            <div class="latex-output p-6 rounded space-y-4">
+                                <p>勾股定理：a² + b² = c²</p>
+                                <p>欧拉恒等式：e^(iπ) + 1 = 0</p>
+                                <p>分数：a/b + c/d = (ad + bc)/bd</p>
+                                <p>根号：√(x² + y²)</p>
+                                <p>求和：∑(i=1 to n) i = n(n+1)/2</p>
+                                <p>积分：∫(a to b) f(x) dx</p>
+                                <p>极限：lim(x→∞) 1/x = 0</p>
+                                <p>矩阵：(a b; c d)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 行间公式 -->
+                <div class="bg-white rounded-lg shadow-sm p-8 mb-8">
+                    <h3 class="text-2xl font-semibold mb-6">行间公式</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold mb-4">代码示例</h4>
+                            <pre class="latex-code p-4 rounded-md overflow-x-auto font-mono text-sm">
+% 不编号的行间公式
+\[
+\int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}
+\]
+
+% 编号的行间公式
+\begin{equation}
+\frac{d}{dx} f(x) = f'(x)
+\end{equation}
+
+% 多行公式
+\begin{equation}
+\begin{split}
+\sin(A + B) &= \sin A \cos B + \cos A \sin B \\
+\cos(A + B) &= \cos A \cos B - \sin A \sin B
+\end{split}
+\end{equation}
+
+% 方程组
+\begin{equation}
+\begin{cases}
+a_1x + b_1y = c_1 \\
+a_2x + b_2y = c_2
+\end{cases}
+\end{equation}</pre>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-4">效果预览</h4>
+                            <div class="latex-output p-6 rounded space-y-6">
+                                <div class="text-center">
+                                    <p>∫(-∞ to ∞) e^(-x²) dx = √π</p>
+                                </div>
+                                
+                                <div class="text-center">
+                                    <p>df(x)/dx = f'(x)</p>
+                                    <p class="text-right text-gray-500 text-sm">(1)</p>
+                                </div>
+                                
+                                <div class="text-center">
+                                    <p>sin(A + B) = sin A cos B + cos A sin B</p>
+                                    <p>cos(A + B) = cos A cos B - sin A sin B</p>
+                                    <p class="text-right text-gray-500 text-sm">(2)</p>
+                                </div>
+                                
+                                <div class="text-center">
+                                    <p>{ a₁x + b₁y = c₁</p>
+                                    <p>  a₂x + b₂y = c₂</p>
+                                    <p class="text-right text-gray-500 text-sm">(3)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 复杂公式 -->
+                <div class="bg-white rounded-lg shadow-sm p-8">
+                    <h3 class="text-2xl font-semibold mb-6">复杂公式示例</h3>
+                    
+                    <div class="mb-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-semibold">代码示例</h4>
+                            <button class="copy-button px-3 py-1 text-sm border border-gray-300 rounded" onclick="copyCode(this, 'complex-equation-code')">
+                                <i class="fa fa-copy mr-1"></i>复制
+                            </button>
+                        </div>
+                        <pre id="complex-equation-code" class="latex-code p-4 rounded-md overflow-x-auto font-mono text-sm">
+% 微分方程
+\begin{equation}
+\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} = f(x,y)
+\end{equation}
+
+% 矩阵方程
+\begin{equation}
+\begin{pmatrix}
+a_{11} & a_{12} & \cdots & a_{1n} \\
+a_{21} & a_{22} & \cdots & a_{2n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{n1} & a_{n2} & \cdots & a_{nn}
+\end{pmatrix}
+\begin{pmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{pmatrix}
+=
+\begin{pmatrix} b_1 \\ b_2 \\ \vdots \\ b_n \end{pmatrix}
+\end{equation}
+
+% 概率公式
+\begin{equation}
+P(A|B) = \frac{P(B|A)P(A)}{P(B)}
+\end{equation}
+
+% 泰勒展开
+\begin{equation}
+f(x) = f(a) + f'(a)(x-a) + \frac{f''(a)}{2!}(x-a)^2 + \cdots + \frac{f^{(n)}(a)}{n!}(x-a)^n + R_n
+\end{equation}</pre>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <h4 class="font-semibold mb-4">常用数学符号</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                            <div><code>\alpha</code> → α</div>
+                            <div><code>\beta</code> → β</div>
+                            <div><code>\gamma</code> → γ</div>
+                            <div><code>\delta</code> → δ</div>
+                            <div><code>\epsilon</code> → ε</div>
+                            <div><code>\lambda</code> → λ</div>
+                            <div><code>\mu</code> → μ</div>
+                            <div><code>\pi</code> → π</div>
+                            <div><code>\sigma</code> → σ</div>
+                            <div><code>\tau</code> → τ</div>
+                            <div><code>\phi</code> → φ</div>
+                            <div><code>\theta</code> → θ</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 参考文献 -->
+        <section id="references" class="py-16 bg-white">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold mb-8 text-center">6. 参考文献</h2>
+                
+                <!-- BibTeX 基础 -->
+                <div class="bg-gray-50 rounded-lg p-8 mb-8">
+                    <h3 class="text-2xl font-semibold mb-6">BibTeX 基础</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold mb-4">.bib 文件示例</h4>
+                            <pre class="latex-code p-4 rounded-md overflow-x-auto font-mono text-sm">
+@article{einstein1905,
+    author = {Einstein, Albert},
+    title = {Zur Elektrodynamik bewegter K{\"o}rper},
+    journal = {Annalen der Physik},
+    volume = {322},
+    number = {10},
+    pages = {891--921},
+    year = {1905},
+    publisher = {Wiley-VCH}
+}
+
+@book{latexcompanion,
+    author = {Goossens, Michel and Mittelbach, Frank and Samarin, Alexander},
+    title = {The \LaTeX\ Companion},
+    edition = {2},
+    publisher = {Addison-Wesley},
+    year = {2004}
+}
+
+@inproceedings{lecun1998gradient,
+    author = {LeCun, Yann and Bottou, L{\'e}on and Bengio, Yoshua and Haffner, Patrick},
+    title = {Gradient-based learning applied to document recognition},
+    booktitle = {Proceedings of the IEEE},
+    volume = {86},
+    number = {11},
+    pages = {2278--2324},
+    year = {1998},
+    organization = {IEEE}
+}</pre>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-4">文献类型说明</h4>
+                            <div class="space-y-4">
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2">@article</h5>
+                                    <p class="text-sm text-gray-700">期刊文章</p>
+                                    <p class="text-xs text-gray-600 mt-1">必填字段：author, title, journal, year</p>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2">@book</h5>
+                                    <p class="text-sm text-gray-700">书籍</p>
+                                    <p class="text-xs text-gray-600 mt-1">必填字段：author/editor, title, publisher, year</p>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2">@inproceedings</h5>
+                                    <p class="text-sm text-gray-700">会议论文</p>
+                                    <p class="text-xs text-gray-600 mt-1">必填字段：author, title, booktitle, year</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 在文档中引用 -->
+                <div class="bg-white rounded-lg shadow-sm p-8 mb-8">
+                    <h3 class="text-2xl font-semibold mb-6">在文档中引用</h3>
+                    
+                    <div class="mb-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-semibold">代码示例</h4>
+                            <button class="copy-button px-3 py-1 text-sm border border-gray-300 rounded" onclick="copyCode(this, 'citation-code')">
+                                <i class="fa fa-copy mr-1"></i>复制
+                            </button>
+                        </div>
+                        <pre id="citation-code" class="latex-code p-4 rounded-md overflow-x-auto font-mono text-sm">
+\documentclass{article}
+\usepackage{ctex}
+\usepackage{cite} % 引用宏包
+
+\begin{document}
+
+\section{引言}
+爱因斯坦在相对论中提出了著名的质能方程 \cite{einstein1905}。
+LaTeX 是一个强大的排版系统 \cite{latexcompanion}。
+深度学习在图像识别方面取得了显著进展 \cite{lecun1998gradient}。
+
+\section{相关工作}
+多项研究表明 \cite{einstein1905, latexcompanion}，
+传统方法在某些场景下仍然有效。
+
+% 生成参考文献列表
+\bibliographystyle{plain} % 参考文献样式
+\bibliography{references} % .bib 文件名
+
+\end{document}</pre>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <h4 class="font-semibold mb-4">常用引用命令</h4>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="font-mono text-sm mb-1">\cite{key}</p>
+                                <p class="text-sm text-gray-700">基本引用</p>
+                            </div>
+                            <div>
+                                <p class="font-mono text-sm mb-1">\citet{key}</p>
+                                <p class="text-sm text-gray-700">文本引用（作者，年份）</p>
+                            </div>
+                            <div>
+                                <p class="font-mono text-sm mb-1">\citep{key}</p>
+                                <p class="text-sm text-gray-700">括号引用（作者，年份）</p>
+                            </div>
+                            <div>
+                                <p class="font-mono text-sm mb-1">\cite{key1,key2}</p>
+                                <p class="text-sm text-gray-700">多重引用</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 参考文献样式 -->
+                <div class="bg-white rounded-lg shadow-sm p-8">
+                    <h3 class="text-2xl font-semibold mb-6">参考文献样式</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold mb-4">常用样式</h4>
+                            <div class="space-y-3">
+                                <div class="border border-gray-200 rounded-lg p-3">
+                                    <p class="font-mono text-sm mb-1">\bibliographystyle{plain}</p>
+                                    <p class="text-xs text-gray-700">按字母顺序排列，数字编号</p>
+                                </div>
+                                <div class="border border-gray-200 rounded-lg p-3">
+                                    <p class="font-mono text-sm mb-1">\bibliographystyle{unsrt}</p>
+                                    <p class="text-xs text-gray-700">按引用顺序排列，数字编号</p>
+                                </div>
+                                <div class="border border-gray-200 rounded-lg p-3">
+                                    <p class="font-mono text-sm mb-1">\bibliographystyle{alpha}</p>
+                                    <p class="text-xs text-gray-700">作者-年份字母标签</p>
+                                </div>
+                                <div class="border border-gray-200 rounded-lg p-3">
+                                    <p class="font-mono text-sm mb-1">\bibliographystyle{abbrv}</p>
+                                    <p class="text-xs text-gray-700">缩写格式，数字编号</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-4">效果示例</h4>
+                            <div class="latex-output p-4 rounded space-y-2 text-sm">
+                                <p>[1] Einstein, A. Zur Elektrodynamik bewegter K{\"o}rper. Annalen der Physik, 322(10):891–921, 1905.</p>
+                                <p>[2] Goossens, M., Mittelbach, F., and Samarin, A. The LaTeX Companion. Addison-Wesley, 2nd edition, 2004.</p>
+                                <p>[3] LeCun, Y., Bottou, L., Bengio, Y., and Haffner, P. Gradient-based learning applied to document recognition. Proceedings of the IEEE, 86(11):2278–2324, 1998.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TikZ 绘图 -->
+        <section id="tikz" class="py-16 bg-gray-50">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold mb-8 text-center">7. TikZ 绘图</h2>
+                
+                <!-- 基础图形 -->
+                <div class="bg-white rounded-lg shadow-sm p-8 mb-8">
+                    <h3 class="text-2xl font-semibold mb-6">基础图形</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold mb-4">代码示例</h4>
+                            <pre class="latex-code p-4 rounded-md overflow-x-auto font-mono text-sm">
+\usepackage{tikz}
+
+% 基本图形
+\begin{tikzpicture}
+    % 直线
+    \draw (0,0) -- (2,0);
+    
+    % 带箭头的直线
+    \draw[->] (0,1) -- (2,1);
+    
+    % 矩形
+    \draw (0,2) rectangle (2,3);
+    
+    % 圆
+    \draw (1,4) circle (0.5);
+    
+    % 椭圆
+    \draw (1,5.5) ellipse (0.8 and 0.3);
+    
+    % 填充图形
+    \fill[red!30] (0,6.5) rectangle (2,7.5);
+    \fill[blue!30] (1,8.5) circle (0.5);
+\end{tikzpicture}
+
+% 颜色和样式
+\begin{tikzpicture}
+    \draw[black, thick] (0,0) -- (3,0);
+    \draw[red, dashed] (0,0.5) -- (3,0.5);
+    \draw[blue, dotted] (0,1) -- (3,1);
+    \draw[green, dashdotted] (0,1.5) -- (3,1.5);
+    \draw[orange, thick, ->] (0,2) -- (3,2);
+\end{tikzpicture}</pre>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-4">效果预览</h4>
+                            <div class="latex-output p-6 rounded">
+                                <div class="flex flex-col space-y-4">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-16 h-4 border-b border-black"></div>
+                                        <span class="text-sm">直线</span>
+                                    </div>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-16 h-4 border-b border-black relative">
+                                            <div class="absolute right-0 top-1/2 transform -translate-y-1/2 w-0 h-0 border-l-4 border-y-4 border-l-black border-y-transparent"></div>
+                                        </div>
+                                        <span class="text-sm">带箭头直线</span>
+                                    </div>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-16 h-4 border border-black"></div>
+                                        <span class="text-sm">矩形</span>
+                                    </div>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-8 h-8 border border-black rounded-full"></div>
+                                        <span class="text-sm">圆</span>
+                                    </div>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-4 border border-black rounded-full"></div>
+                                        <span class="text-sm">椭圆</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 流程图 -->
+                <div class="bg-white rounded-lg shadow-sm p-8 mb-8">
+                    <h3 class="text-2xl font-semibold mb-6">流程图</h3>
+                    
+                    <div class="mb-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-semibold">代码示例</h4>
+                            <button class="copy-button px-3 py-1 text-sm border border-gray-300 rounded" onclick="copyCode(this, 'flowchart-code')">
+                                <i class="fa fa-copy mr-1"></i>复制
+                            </button>
+                        </div>
+                        <pre id="flowchart-code" class="latex-code p-4 rounded-md overflow-x-auto font-mono text-sm">
+\begin{tikzpicture}[
+    block/.style = {rectangle, draw, fill=blue!20, 
+                   text width=5em, text centered, rounded corners, minimum height=2em},
+    decision/.style = {diamond, draw, fill=red!20, 
+                     text width=4em, text centered, rounded corners, minimum height=2em},
+    startstop/.style = {ellipse, draw, fill=green!20, 
+                      text width=5em, text centered, rounded corners, minimum height=2em},
+    arrow/.style = {thick,->,>=stealth}
+]
+
+    % 节点定义
+    \node [startstop] (start) {开始};
+    \node [block, below of=start] (input) {输入数据};
+    \node [decision, below of=input] (decision) {数据有效?};
+    \node [block, below of=decision, yshift=-0.5cm] (process) {处理数据};
+    \node [block, right of=decision, xshift=4cm] (error) {显示错误};
+    \node [startstop, below of=process] (end) {结束};
+
+    % 箭头连接
+    \draw [arrow] (start) -- (input);
+    \draw [arrow] (input) -- (decision);
+    \draw [arrow] (decision) -- node[anchor=east] {是} (process);
+    \draw [arrow] (decision) -- node[anchor=south] {否} (error);
+    \draw [arrow] (process) -- (end);
+    \draw [arrow] (error) |- (input);
+
+\end{tikzpicture}</pre>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <h4 class="font-semibold mb-4">流程图元素</h4>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="text-center">
+                                <div class="w-24 h-8 border border-black rounded-full bg-green-100 mx-auto flex items-center justify-center text-sm">开始/结束</div>
+                                <p class="text-xs text-gray-600 mt-2">ellipse 形状</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-24 h-8 border border-black bg-blue-100 mx-auto flex items-center justify-center text-sm">处理步骤</div>
+                                <p class="text-xs text-gray-600 mt-2">rectangle 形状</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-16 h-8 border border-black bg-red-100 mx-auto flex items-center justify-center text-sm">决策</div>
+                                <p class="text-xs text-gray-600 mt-2">diamond 形状</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 数学图形 -->
+                <div class="bg-white rounded-lg shadow-sm p-8">
+                    <h3 class="text-2xl font-semibold mb-6">数学图形</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold mb-4">函数图像</h4>
+                            <pre class="latex-code p-4 rounded-md overflow-x-auto font-mono text-sm">
+\begin{tikzpicture}[scale=1.2]
+    % 坐标轴
+    \draw[->] (-3,0) -- (3,0) node[right] {$x$};
+    \draw[->] (0,-1.5) -- (0,1.5) node[above] {$y$};
+    
+    % 网格
+    \draw[dashed,gray!30] (-3,-1.5) grid (3,1.5);
+    
+    % 函数图像
+    \draw[blue, thick] plot[domain=-3:3, samples=100] (\x, {sin(\x r)});
+    \draw[red, thick] plot[domain=-3:3, samples=100] (\x, {cos(\x r)});
+    
+    % 图例
+    \node[blue] at (2, 0.8) {$\sin(x)$};
+    \node[red] at (2, 0.3) {$\cos(x)$};
+\end{tikzpicture}
+
+% 几何图形
+\begin{tikzpicture}
+    % 三角形
+    \draw[thick] (0,0) -- (3,0) -- (1.5,2.6) -- cycle;
+    
+    % 高线
+    \draw[dashed] (1.5,2.6) -- (1.5,0);
+    
+    % 标签
+    \node at (-0.3,-0.3) {$A$};
+    \node at (3.3,-0.3) {$B$};
+    \node at (1.8,2.8) {$C$};
+    \node at (1.8,1) {$h$};
+\end{tikzpicture}</pre>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-4">效果说明</h4>
+                            <div class="space-y-4">
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2">三角函数图像</h5>
+                                    <p class="text-sm text-gray-700">使用 plot 命令绘制 sin(x) 和 cos(x) 函数</p>
+                                    <ul class="text-xs text-gray-600 mt-2 space-y-1">
+                                        <li>• domain 设置定义域</li>
+                                        <li>• samples 设置采样点数</li>
+                                        <li>• r 表示弧度制</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2">几何图形</h5>
+                                    <p class="text-sm text-gray-700">绘制三角形并添加高线和标签</p>
+                                    <ul class="text-xs text-gray-600 mt-2 space-y-1">
+                                        <li>• cycle 闭合图形</li>
+                                        <li>• dashed 设置虚线样式</li>
+                                        <li>• node 添加文本标签</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 自定义命令 -->
+        <section id="commands" class="py-16 bg-white">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold mb-8 text-center">8. 自定义命令</h2>
+                
+                <!-- 基本自定义命令 -->
+                <div class="bg-gray-50 rounded-lg p-8 mb-8">
+                    <h3 class="text-2xl font-semibold mb-6">基本自定义命令</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold mb-4">代码示例</h4>
+                            <pre class="latex-code p-4 rounded-md overflow-x-auto font-mono text-sm">
+% 无参数命令
+\newcommand{\latex}{\LaTeX}
+\newcommand{\myclass}{计算机科学与技术}
+
+% 带一个参数的命令
+\newcommand{\emphasis}[1]{\textbf{\textit{#1}}}
+\newcommand{\highlight}[1]{\textcolor{red}{#1}}
+
+% 带两个参数的命令
+\newcommand{\authorinfo}[2]{作者：#1，单位：#2}
+\newcommand{\equationref}[2]{公式 (\ref{#1}) 中的 #2}
+
+% 带可选参数的命令
+\newcommand{\figurewithcaption}[3][htbp]{
+    \begin{figure}[#1]
+        \centering
+        \includegraphics{#2}
+        \caption{#3}
+    \end{figure}
+}
+
+% 使用示例
+\authorinfo{张三}{清华大学}
+\emphasis{重要内容}
+\highlight{重点强调}
+\figurewithcaption[width=0.8\textwidth]{image.png}{示例图片}</pre>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-4">使用说明</h4>
+                            <div class="space-y-4">
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2">命令格式</h5>
+                                    <p class="text-mono text-sm mb-2">\newcommand{\命令名}[参数个数]{定义}</p>
+                                    <p class="text-xs text-gray-700">参数用 #1, #2, ..., #9 表示</p>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2">可选参数</h5>
+                                    <p class="text-mono text-sm mb-2">\newcommand{\命令名}[参数个数][默认值]{定义}</p>
+                                    <p class="text-xs text-gray-700">使用时用方括号指定可选参数</p>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2">重定义命令</h5>
+                                    <p class="text-mono text-sm mb-2">\renewcommand{\已有命令}{新定义}</p>
+                                    <p class="text-xs text-gray-700">用于修改已存在的命令</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 高级自定义命令 -->
+                <div class="bg-white rounded-lg shadow-sm p-8 mb-8">
+                    <h3 class="text-2xl font-semibold mb-6">高级自定义命令</h3>
+                    
+                    <div class="mb-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-semibold">代码示例</h4>
+                            <button class="copy-button px-3 py-1 text-sm border border-gray-300 rounded" onclick="copyCode(this, 'advanced-commands-code')">
+                                <i class="fa fa-copy mr-1"></i>复制
+                            </button>
+                        </div>
+                        <pre id="advanced-commands-code" class="latex-code p-4 rounded-md overflow-x-auto font-mono text-sm">
+% 条件命令
+\newcommand{\grade}[1]{
+    \ifnum#1 >= 90
+        \textcolor{green}{优秀}
+    \else\ifnum#1 >= 80
+        \textcolor{blue}{良好}
+    \else\ifnum#1 >= 70
+        \textcolor{orange}{中等}
+    \else\ifnum#1 >= 60
+        \textcolor{purple}{及格}
+    \else
+        \textcolor{red}{不及格}
+    \fi\fi\fi\fi
+}
+
+% 循环命令
+\newcounter{loopcounter}
+\newcommand{\repeattext}[3]{
+    \setcounter{loopcounter}{0}
+    \loop
+        #1
+        \stepcounter{loopcounter}
+        \ifnum\value{loopcounter} < #2
+    \repeat
+    #3
+}
+
+% 复杂环境定义
+\newenvironment{mybox}[2][gray!20]{
+    \begin{tcolorbox}[
+        colback=#1,
+        colframe=black,
+        title=#2
+    ]
+}{
+    \end{tcolorbox}
+}
+
+% 数学命令
+\newcommand{\derivative}[2]{\frac{d#1}{d#2}}
+\newcommand{\partialderivative}[2]{\frac{\partial#1}{\partial#2}}
+\newcommand{\integral}[4][]{
+    \int_{#2}^{#3} #4 \, d#1
+}
+
+% 使用示例
+\grade{85} % 输出：良好
+\repeattext{步骤}{3}{完成} % 输出：步骤步骤步骤完成
+\begin{mybox}[blue!10]{重要提示}
+    这是一个重要提示框
+\end{mybox}
+\derivative{y}{x} % 输出：dy/dx
+\integral{x}{a}{b}{f(x)} % 输出：∫(a to b) f(x) dx</pre>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <h4 class="font-semibold mb-4">常用自定义命令示例</h4>
+                        <div class="grid md:grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <p class="font-mono mb-1">\newcommand{\email}[1]{\href{mailto:#1}{#1}}</p>
+                                <p class="text-gray-700">创建邮件链接</p>
+                            </div>
+                            <div>
+                                <p class="font-mono mb-1">\newcommand{\url}[1]{\href{#1}{#1}}</p>
+                                <p class="text-gray-700">创建网页链接</p>
+                            </div>
+                            <div>
+                                <p class="font-mono mb-1">\newcommand{\figref}[1]{图 \ref{#1}}</p>
+                                <p class="text-gray-700">引用图片</p>
+                            </div>
+                            <div>
+                                <p class="font-mono mb-1">\newcommand{\tabref}[1]{表 \ref{#1}}</p>
+                                <p class="text-gray-700">引用表格</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 自定义环境 -->
+                <div class="bg-white rounded-lg shadow-sm p-8">
+                    <h3 class="text-2xl font-semibold mb-6">自定义环境</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold mb-4">代码示例</h4>
+                            <pre class="latex-code p-4 rounded-md overflow-x-auto font-mono text-sm">
+% 基本环境定义
+\newenvironment{myenvironment}{
+    % 环境开始部分
+    \begin{center}
+    \begin{tabular}{|p{0.8\textwidth}|}
+    \hline
+    \textbf{自定义环境：}
+}{
+    % 环境结束部分
+    \\\hline
+    \end{tabular}
+    \end{center}
+}
+
+% 带参数的环境
+\newenvironment{quotationwithauthor}[2][gray!10]{
+    \begin{quote}[#1]
+        \itshape #2
+}{
+    \end{quote}
+}
+
+% 定理环境
+\newtheorem{theorem}{定理}[section]
+\newtheorem{lemma}[theorem]{引理}
+\newtheorem{corollary}[theorem]{推论}
+
+% 证明环境
+\newenvironment{proof}{
+    \begin{trivlist}
+    \item[\hskip \labelsep {\bfseries 证明:}]
+}{
+    \qed
+    \end{trivlist}
+}
+
+% 使用示例
+\begin{myenvironment}
+    这是自定义环境的内容
+\end{myenvironment}
+
+\begin{quotationwithauthor}[Einstein]{
+    想象力比知识更重要，因为知识是有限的，而想象力概括着世界上的一切。
+}
+
+\begin{theorem}
+    对于任意实数 $a$ 和 $b$，有 $a^2 + b^2 \geq 2ab$。
+\end{theorem}
+
+\begin{proof}
+    因为 $(a - b)^2 \geq 0$，展开得 $a^2 - 2ab + b^2 \geq 0$，
+    所以 $a^2 + b^2 \geq 2ab$。
+\end{proof}</pre>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-4">环境定义说明</h4>
+                            <div class="space-y-4">
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2">环境格式</h5>
+                                    <p class="text-mono text-sm mb-2">\newenvironment{环境名}{开始代码}{结束代码}</p>
+                                    <p class="text-xs text-gray-700">开始代码在环境内容前执行，结束代码在环境内容后执行</p>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2">带参数环境</h5>
+                                    <p class="text-mono text-sm mb-2">\newenvironment{环境名}[参数个数]{开始代码}{结束代码}</p>
+                                    <p class="text-xs text-gray-700">参数用 #1, #2 等表示</p>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2">定理环境</h5>
+                                    <p class="text-sm text-gray-700">使用 newtheorem 创建自动编号的定理环境</p>
+                                    <p class="text-xs text-gray-600 mt-1">[theorem] 表示共享编号</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 常用宏包 -->
+        <section id="packages" class="py-16 bg-gray-50">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold mb-8 text-center">9. 常用宏包</h2>
+                
+                <!-- 基础宏包 -->
+                <div class="bg-white rounded-lg shadow-sm p-8 mb-8">
+                    <h3 class="text-2xl font-semibold mb-6">基础宏包</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <h4 class="font-semibold mb-2">amsmath</h4>
+                                <p class="text-sm text-gray-700 mb-2">增强的数学公式支持</p>
+                                <p class="text-xs text-gray-600">提供 align、gather 等环境</p>
+                            </div>
+                            
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <h4 class="font-semibold mb-2">amssymb</h4>
+                                <p class="text-sm text-gray-700 mb-2">数学符号扩展</p>
+                                <p class="text-xs text-gray-600">提供更多数学符号</p>
+                            </div>
+                            
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <h4 class="font-semibold mb-2">graphicx</h4>
+                                <p class="text-sm text-gray-700 mb-2">图片插入</p>
+                                <p class="text-xs text-gray-600">支持多种图片格式</p>
+                            </div>
+                            
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <h4 class="font-semibold mb-2">hyperref</h4>
+                                <p class="text-sm text-gray-700 mb-2">超链接支持</p>
+                                <p class="text-xs text-gray-600">创建交叉引用和网页链接</p>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <h4 class="font-semibold mb-2">geometry</h4>
+                                <p class="text-sm text-gray-700 mb-2">页面布局设置</p>
+                                <p class="text-xs text-gray-600">灵活设置页边距</p>
+                            </div>
+                            
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <h4 class="font-semibold mb-2">fancyhdr</h4>
+                                <p class="text-sm text-gray-700 mb-2">自定义页眉页脚</p>
+                                <p class="text-xs text-gray-600">支持复杂的页眉页脚格式</p>
+                            </div>
+                            
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <h4 class="font-semibold mb-2">multirow</h4>
+                                <p class="text-sm text-gray-700 mb-2">表格合并行</p>
+                                <p class="text-xs text-gray-600">在表格中合并多行单元格</p>
+                            </div>
+                            
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <h4 class="font-semibold mb-2">booktabs</h4>
+                                <p class="text-sm text-gray-700 mb-2">专业表格线</p>
+                                <p class="text-xs text-gray-600">创建高质量的三线表</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 中文支持宏包 -->
+                <div class="bg-white rounded-lg shadow-sm p-8 mb-8">
+                    <h3 class="text-2xl font-semibold mb-6">中文支持宏包</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold mb-4">主要宏包</h4>
+                            <pre class="latex-code p-4 rounded-md overflow-x-auto font-mono text-sm">
+% CTeX 宏包（推荐）
+\usepackage{ctex}
+
+% 文档类方式
+\documentclass{ctexart}    % 对应 article
+\documentclass{ctexrep}    % 对应 report
+\documentclass{ctexbook}   % 对应 book
+\documentclass{ctexbeamer} % 对应 beamer
+
+% 配置选项
+\usepackage[UTF8]{ctex}
+\usepackage[fontset=windows]{ctex}  % Windows 字体
+\usepackage[fontset=mac]{ctex}      % macOS 字体
+\usepackage[fontset=fandol]{ctex}   % Fandol 字体
+
+% 字体设置
+\setmainfont{Times New Roman}        % 英文正文
+\setCJKmainfont{宋体}                % 中文正文
+\setCJKsansfont{黑体}                % 中文无衬线
+\setCJKmonofont{楷体}                % 中文等宽
+
+% 段落设置
+\CTEXsetup[indent={2\ccwd}]{paragraph} % 段落缩进
+\CTEXsetup{section={name={第,章},format={\Huge\bfseries}}} % 章节格式</pre>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-4">使用说明</h4>
+                            <div class="space-y-4">
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2">CTeX 宏包特点</h5>
+                                    <ul class="text-sm text-gray-700 space-y-1">
+                                        <li>• 自动检测编码</li>
+                                        <li>• 支持多种字体配置</li>
+                                        <li>• 提供中文段落格式</li>
+                                        <li>• 支持中文断行和 hyphenation</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2">编译方式</h5>
+                                    <p class="text-sm text-gray-700 mb-2">推荐使用 XeLaTeX 或 LuaLaTeX 编译</p>
+                                    <ul class="text-xs text-gray-600 space-y-1">
+                                        <li>• XeLaTeX: 支持系统字体</li>
+                                        <li>• LuaLaTeX: 支持更多高级特性</li>
+                                        <li>• pdfLaTeX: 需要配置 CJK 字体</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 专业宏包 -->
+                <div class="bg-white rounded-lg shadow-sm p-8">
+                    <h3 class="text-2xl font-semibold mb-6">专业宏包</h3>
+                    
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="space-y-4">
+                            <h4 class="font-semibold text-lg">科学计算</h4>
+                            <div class="border border-gray-200 rounded-lg p-3">
+                                <h5 class="font-semibold mb-1">numpy</h5>
+                                <p class="text-xs text-gray-700">数值计算</p>
+                            </div>
+                            <div class="border border-gray-200 rounded-lg p-3">
+                                <h5 class="font-semibold mb-1">scipy</h5>
+                                <p class="text-xs text-gray-700">科学计算</p>
+                            </div>
+                            <div class="border border-gray-200 rounded-lg p-3">
+                                <h5 class="font-semibold mb-1">matplotlib</h5>
+                                <p class="text-xs text-gray-700">数据可视化</p>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <h4 class="font-semibold text-lg">图形绘制</h4>
+                            <div class="border border-gray-200 rounded-lg p-3">
+                                <h5 class="font-semibold mb-1">tikz</h5>
+                                <p class="text-xs text-gray-700">矢量图形</p>
+                            </div>
+                            <div class="border border-gray-200 rounded-lg p-3">
+                                <h5 class="font-semibold mb-1">pgfplots</h5>
+                                <p class="text-xs text-gray-700">数据图表</p>
+                            </div>
+                            <div class="border border-gray-200 rounded-lg p-3">
+                                <h5 class="font-semibold mb-1">asymptote</h5>
+                                <p class="text-xs text-gray-700">高级图形</p>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <h4 class="font-semibold text-lg">文档格式</h4>
+                            <div class="border border-gray-200 rounded-lg p-3">
+                                <h5 class="font-semibold mb-1">beamer</h5>
+                                <p class="text-xs text-gray-700">演示文稿</p>
+                            </div>
+                            <div class="border border-gray-200 rounded-lg p-3">
+                                <h5 class="font-semibold mb-1">tikz-cd</h5>
+                                <p class="text-xs text-gray-700">交换图表</p>
+                            </div>
+                            <div class="border border-gray-200 rounded-lg p-3">
+                                <h5 class="font-semibold mb-1">biblatex</h5>
+                                <p class="text-xs text-gray-700">参考文献</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Beamer 演示文稿 -->
+        <section id="beamer" class="py-16 bg-white">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold mb-8 text-center">10. Beamer 演示文稿</h2>
+                
+                <!-- Beamer 基础 -->
+                <div class="bg-gray-50 rounded-lg p-8 mb-8">
+                    <h3 class="text-2xl font-semibold mb-6">Beamer 基础</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold mb-4">基本结构</h4>
+                            <pre class="latex-code p-4 rounded-md overflow-x-auto font-mono text-sm">
+\documentclass{beamer}
+\usepackage{ctex}
+
+% 设置主题
+\usetheme{Warsaw}
+\usecolortheme{beaver}
+\useinnertheme{rounded}
+\useoutertheme{infolines}
+
+% 标题信息
+\title{Beamer 演示文稿示例}
+\subtitle{LaTeX 教程}
+\author{演示者姓名}
+\institute{机构名称}
+\date{\today}
+\logo{\includegraphics[width=1cm]{logo.png}}
+
+\begin{document}
+
+% 标题页
+\frame{\titlepage}
+
+% 目录页
+\begin{frame}
+    \frametitle{目录}
+    \tableofcontents
+\end{frame}
+
+% 正文页
+\section{第一部分}
+\begin{frame}
+    \frametitle{第一页标题}
+    \framesubtitle{副标题}
+    
+    这是第一页的内容。
+    
+    \begin{itemize}
+        \item 项目1
+        \item 项目2
+        \item 项目3
+    \end{itemize}
+\end{frame}
+
+\end{document}</pre>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-4">主题设置</h4>
+                            <div class="space-y-4">
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2">内置主题</h5>
+                                    <div class="grid grid-cols-2 gap-2 text-sm">
+                                        <div>Warsaw</div>
+                                        <div>Berlin</div>
+                                        <div>Madrid</div>
+                                        <div>Frankfurt</div>
+                                        <div>Copenhagen</div>
+                                        <div>Singapore</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2">颜色主题</h5>
+                                    <div class="grid grid-cols-2 gap-2 text-sm">
+                                        <div>beaver</div>
+                                        <div>dolphin</div>
+                                        <div>seahorse</div>
+                                        <div>whale</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 动画效果 -->
+                <div class="bg-white rounded-lg shadow-sm p-8 mb-8">
+                    <h3 class="text-2xl font-semibold mb-6">动画效果</h3>
+                    
+                    <div class="mb-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-semibold">代码示例</h4>
+                            <button class="copy-button px-3 py-1 text-sm border border-gray-300 rounded" onclick="copyCode(this, 'beamer-animation-code')">
+                                <i class="fa fa-copy mr-1"></i>复制
+                            </button>
+                        </div>
+                        <pre id="beamer-animation-code" class="latex-code p-4 rounded-md overflow-x-auto font-mono text-sm">
+% 渐进显示
+\begin{frame}
+    \frametitle{渐进显示示例}
+    
+    \begin{itemize}[<+->]
+        \item 第一点
+        \item 第二点
+        \item 第三点
+        \item 第四点
+    \end{itemize}
+\end{frame}
+
+% 手动控制
+\begin{frame}
+    \frametitle{手动控制动画}
+    
+    \only<1>{这是第一页内容}
+    \only<2>{这是第二页内容}
+    \only<3>{这是第三页内容}
+    
+    \begin{itemize}
+        \item<1-> 始终显示的项目
+        \item<2-> 从第二页开始显示
+        \item<3> 只在第三页显示
+    \end{itemize}
+\end{frame}
+
+% 覆盖效果
+\begin{frame}
+    \frametitle{覆盖效果}
+    
+    \uncover<1->{这是基本内容}
+    
+    \uncover<2->{
+        \begin{equation}
+        E = mc^2
+        \end{equation}
+    }
+    
+    \uncover<3->{这是额外说明}
+\end{frame}
+
+% 透明度控制
+\begin{frame}
+    \frametitle{透明度动画}
+    
+    \setbeamercovered{transparent}
+    
+    \begin{itemize}[<+->]
+        \item 重点内容
+        \item 次要内容
+        \item 补充说明
+    \end{itemize}
+\end{frame}</pre>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <h4 class="font-semibold mb-4">动画命令说明</h4>
+                        <div class="grid md:grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <p class="font-mono mb-1"><1-></p>
+                                <p class="text-gray-700">从第1页开始显示</p>
+                            </div>
+                            <div>
+                                <p class="font-mono mb-1"><-3></p>
+                                <p class="text-gray-700">显示到第3页</p>
+                            </div>
+                            <div>
+                                <p class="font-mono mb-1"><2-4></p>
+                                <p class="text-gray-700">在第2-4页显示</p>
+                            </div>
+                            <div>
+                                <p class="font-mono mb-1"><+-></p>
+                                <p class="text-gray-700">渐进显示</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 复杂页面布局 -->
+                <div class="bg-white rounded-lg shadow-sm p-8">
+                    <h3 class="text-2xl font-semibold mb-6">复杂页面布局</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold mb-4">分栏布局</h4>
+                            <pre class="latex-code p-4 rounded-md overflow-x-auto font-mono text-sm">
+% 分栏布局
+\begin{frame}
+    \frametitle{分栏布局示例}
+    
+    \begin{columns}[t]
+        \column{0.5\textwidth}
+            \textbf{左侧内容}
+            \begin{itemize}
+                \item 项目1
+                \item 项目2
+                \item 项目3
+            \end{itemize}
+        
+        \column{0.5\textwidth}
+            \textbf{右侧内容}
+            \[
+            f(x) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x-\mu)^2}{2\sigma^2}}
+            \]
+    \end{columns}
+\end{frame}
+
+% 嵌套分栏
+\begin{frame}
+    \frametitle{嵌套分栏}
+    
+    \begin{columns}
+        \column{0.6\textwidth}
+            主要内容区域
+            
+            \begin{columns}[t]
+                \column{0.5\textwidth}
+                    子栏1
+                \column{0.5\textwidth}
+                    子栏2
+            \end{columns}
+        
+        \column{0.4\textwidth}
+            侧边内容区域
+    \end{columns}
+\end{frame}
+
+% 文字环绕图片
+\begin{frame}
+    \frametitle{图文混排}
+    
+    \begin{minipage}{0.6\textwidth}
+        这是文字内容区域，可以放置大量文本。图片将显示在右侧，文字会自动环绕。
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.35\textwidth}
+        \includegraphics[width=\textwidth]{image.png}
+    \end{minipage}
+\end{frame}</pre>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-4">特殊页面类型</h4>
+                            <pre class="latex-code p-4 rounded-md overflow-x-auto font-mono text-sm">
+% 空白页
+\begin{frame}[plain]
+    \centering
+    \Huge 谢谢观看！
+    \vspace{1cm}
+    \Large 欢迎提问
+\end{frame}
+
+% 带注释的页面
+\begin{frame}
+    \frametitle{带注释的页面}
+    
+    这是演示内容。
+    
+    \note{
+        这是演讲者的注释，
+        只会在演讲者视图中显示。
+    }
+\end{frame}
+
+% 引用页面
+\begin{frame}[allowframebreaks]
+    \frametitle{参考文献}
+    \bibliographystyle{plain}
+    \bibliography{references}
+\end{frame}
+
+% 目录导航页面
+\AtBeginSection[]
+{
+    \begin{frame}
+        \frametitle{目录}
+        \tableofcontents[currentsection]
+    \end{frame}
+}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 实用技巧 -->
+        <section id="tips" class="py-16 bg-gray-50">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold mb-8 text-center">11. 实用技巧</h2>
+                
+                <!-- 调试技巧 -->
+                <div class="bg-white rounded-lg shadow-sm p-8 mb-8">
+                    <h3 class="text-2xl font-semibold mb-6">调试技巧</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold mb-4">常见错误处理</h4>
+                            <div class="space-y-4">
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2">Missing $ inserted</h5>
+                                    <p class="text-sm text-gray-700">数学模式未正确结束</p>
+                                    <p class="text-xs text-gray-600">检查是否遗漏了 $ 或 \)</p>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2">LaTeX Error: File 'xxx.sty' not found</h5>
+                                    <p class="text-sm text-gray-700">宏包未安装</p>
+                                    <p class="text-xs text-gray-600">安装相应的宏包或检查拼写</p>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2">Paragraph ended before \xxx was complete</h5>
+                                    <p class="text-sm text-gray-700">环境未正确结束</p>
+                                    <p class="text-xs text-gray-600">检查是否遗漏了 \end{xxx}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-4">调试工具</h4>
+                            <div class="space-y-4">
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2">\tracingall</h5>
+                                    <p class="text-sm text-gray-700">详细的调试输出</p>
+                                    <p class="text-xs text-gray-600">在导言区添加，查看详细的编译过程</p>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2">\show\command</h5>
+                                    <p class="text-sm text-gray-700">显示命令定义</p>
+                                    <p class="text-xs text-gray-600">查看命令的具体实现</p>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2">% 注释</h5>
+                                    <p class="text-sm text-gray-700">逐行注释查找错误</p>
+                                    <p class="text-xs text-gray-600">通过注释定位错误位置</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 优化技巧 -->
+                <div class="bg-white rounded-lg shadow-sm p-8">
+                    <h3 class="text-2xl font-semibold mb-6">优化技巧</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold mb-4">性能优化</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-start space-x-3">
+                                    <i class="fa fa-check-circle text-black mt-1"></i>
+                                    <div>
+                                        <p class="font-semibold text-sm">使用 \include 和 \input</p>
+                                        <p class="text-xs text-gray-600">将大文档分割成多个文件</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <i class="fa fa-check-circle text-black mt-1"></i>
+                                    <div>
+                                        <p class="font-semibold text-sm">使用 \includeonly</p>
+                                        <p class="text-xs text-gray-600">只编译需要修改的部分</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <i class="fa fa-check-circle text-black mt-1"></i>
+                                    <div>
+                                        <p class="font-semibold text-sm">预编译图片</p>
+                                        <p class="text-xs text-gray-600">将复杂图形单独编译</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <i class="fa fa-check-circle text-black mt-1"></i>
+                                    <div>
+                                        <p class="font-semibold text-sm">使用缓存</p>
+                                        <p class="text-xs text-gray-600">利用 .aux, .bbl 等缓存文件</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-4">代码规范</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-start space-x-3">
+                                    <i class="fa fa-check-circle text-black mt-1"></i>
+                                    <div>
+                                        <p class="font-semibold text-sm">统一的缩进风格</p>
+                                        <p class="text-xs text-gray-600">保持代码结构清晰</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <i class="fa fa-check-circle text-black mt-1"></i>
+                                    <div>
+                                        <p class="font-semibold text-sm">有意义的标签名</p>
+                                        <p class="text-xs text-gray-600">使用 descriptive labels</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <i class="fa fa-check-circle text-black mt-1"></i>
+                                    <div>
+                                        <p class="font-semibold text-sm">适当的注释</p>
+                                        <p class="text-xs text-gray-600">解释复杂的代码部分</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <i class="fa fa-check-circle text-black mt-1"></i>
+                                    <div>
+                                        <p class="font-semibold text-sm">模块化设计</p>
+                                        <p class="text-xs text-gray-600">将功能封装成命令或环境</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 总结 -->
+        <section id="summary" class="py-16 bg-white">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-3xl font-bold mb-8">学习总结</h2>
+                <p class="text-xl text-gray-700 mb-12">
+                    通过本教程，您已经掌握了 LaTeX 的核心功能和高级技巧。
+                    现在您可以创建专业的学术文档、演示文稿和复杂的数学公式了。
+                </p>
+                
+                <div class="grid md:grid-cols-3 gap-8 mb-12">
+                    <div class="bg-gray-50 rounded-lg p-6">
+                        <i class="fa fa-graduation-cap text-3xl mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-2">基础扎实</h3>
+                        <p class="text-gray-700">掌握了文档结构、文本格式、表格制作等基础知识</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-6">
+                        <i class="fa fa-calculator text-3xl mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-2">公式精通</h3>
+                        <p class="text-gray-700">能够创建复杂的数学公式和科学表达式</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-6">
+                        <i class="fa fa-paint-brush text-3xl mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-2">高级应用</h3>
+                        <p class="text-gray-700">学会了绘图、自定义命令、演示文稿制作等高级功能</p>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="https://cn.overleaf.com/learn/latex/Learn_LaTeX_in_30_minutes" class="bg-black text-white px-8 py-3 rounded-md hover:bg-gray-800 transition-colors">
+                        Overleaf：Learn LaTeX in 30 minutes
+                    </a>
+                    <a href="https://www.texpage.com/zh/" class="border border-gray-300 px-8 py-3 rounded-md hover:border-gray-400 transition-colors">
+                        Tex Page（ Overleaf 超过免费编译时间可以尝试用它编译）
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">LaTeX 教程</h3>
+                    <p class="text-gray-400">从入门到差不多精通的指南</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">学习资源</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="https://www.latex-project.org/" class="hover:text-white transition-colors">官方文档</a></li>
+                        <li><a href="https://cn.overleaf.com/" class="hover:text-white transition-colors">在线编辑器</a></li>
+                        <li><a href="https://cn.overleaf.com/latex/templates" class="hover:text-white transition-colors">模板</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">联系我</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>邮箱：karcenzheng@yeah.net</li>
+                        <li>GitHub：https://github.com/Karcen</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 LaTeX 教程. Karcen Zheng 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 移动端菜单切换
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 复制代码功能
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const codeText = codeElement.textContent;
+            
+            navigator.clipboard.writeText(codeText).then(() => {
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fa fa-check mr-1"></i>已复制';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 100) {
+                nav.classList.add('shadow-md');
+            } else {
+                nav.classList.remove('shadow-md');
+            }
+        });
+
+        // 代码高亮（简化版）
+        document.querySelectorAll('pre').forEach(pre => {
+            const lines = pre.textContent.split('\n');
+            let lineNumber = 1;
+            const highlighted = lines.map(line => {
+                if (line.trim() === '') return '';
+                return `<div class="code-line" data-line="${lineNumber++}">${line}</div>`;
+            }).join('\n');
+            pre.innerHTML = highlighted;
+        });
+
+        // 页面加载动画
+        window.addEventListener('load', function() {
+            document.querySelectorAll('.interactive-element').forEach((element, index) => {
+                setTimeout(() => {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+
+        // 初始化交互元素
+        document.querySelectorAll('.interactive-element').forEach(element => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = 'all 0.6s ease';
+        });
+
+        // 滚动时显示元素
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
